@@ -1,0 +1,55 @@
+---
+#based in follow tutos http://blog.toast38coza.me/setup-and-configure-haproxy-with-ansible/
+#https://www.digitalocean.com/community/tutorials/how-to-use-haproxy-to-set-up-mysql-load-balancing--3
+#https://github.com/geerlingguy/ansible-role-haproxy
+#https://github.com/devops-coop/ansible-haproxy
+
+- name: install depences
+  apt: pkg={{ item }}
+  with_items:
+    - mysql-client
+    - libmysqlclient-dev
+    - python-pip
+    - python-dev
+
+- name: install pip modules
+  pip: name={{ item }}
+  with_items:
+    - mysql-python
+
+- name: Show all databases
+  shell: mysql -u {{haproxy_root_user}} -p{{haproxy_root_mysql_pass}} -h {{mysql_ip_master_node1}} -e 'show databases;' 
+  register: databases
+  ignore_errors: true
+
+- name: List databses {{ mysql_ip_master_node1 }}
+  debug: var=databases.stdout_lines
+
+- name: Ensure HAProxy is installed (Debian).
+  apt: name=haproxy state=installed
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure HAProxy is enabled (so init script will start it on Debian).
+  lineinfile:
+    dest: /etc/default/haproxy
+    regexp: "^ENABLED.+$"
+    line: "ENABLED=1"
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Copy HAProxy configuration in place.
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    backup: yes
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: restart haproxy
+
+- name: Ensure HAProxy is started and enabled on boot.
+  service: name=haproxy state=started enabled=yes
+
+- name: Testing Load Balancing and Failover
+  shell: mysql -u {{haproxy_root_user}} -p{{haproxy_root_mysql_pass}} -h {{haproxy_ip}} -e "show variables like 'server_id'" 
+  register: databases
+  ignore_errors: true
