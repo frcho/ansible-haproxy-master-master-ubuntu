@@ -1,9 +1,9 @@
 mysql_ip_master_node1: 10.200.19.21
 mysql_ip_master_node2: 10.200.19.22
 mysql_repl_role: master
-mysql_replication_pass: d41d8cd98f00b204e9800998ecf8427e
+mysql_replication_pass: AlcSVC3IHm0iTdbcdAYLTfY6XuYA2wY4
 haproxy_ip: 10.200.19.100
-haproxy_root_mysql_pass: wQWQIpIR0UgcXaVh1F84lRyE03ubA4uU
+haproxy_root_mysql_pass: 36jek6aM3axBTkjOn9KYbpyxUOL1niyz
 haproxy_root_user: 'haproxy_root'
 haproxy_check_user: 'haproxy_check'
 iface: eth1

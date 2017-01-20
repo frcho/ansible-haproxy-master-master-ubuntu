@@ -18,5 +18,10 @@ listen {{haproxy_backend_name}}
     server mysql-1 {{mysql_ip_master_node1}}:{{ haproxy_backend_port }} check
     server mysql-2 {{mysql_ip_master_node2}}:{{ haproxy_backend_port }} check
 
-
+listen {{haproxy_frontend_name}}
+    bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
+    stats uri /
+    mode {{haproxy_frontend_mode}}
+    stats enable
+    stats auth {{haproxy_user}}:{{haproxy_web_pass}}
 
