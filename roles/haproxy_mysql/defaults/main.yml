@@ -1,8 +1,8 @@
 ---
 
-haproxy_user: you_haproxy_user
-haproxy_group: you_haproxy_group
-haproxy_web_pass: you_web_pass
+haproxy_user: haproxy
+haproxy_group: haproxy
+haproxy_web_pass: d41d8cd98f00b2
 
 # Backend settings.
 haproxy_backend_name: 'mysql-cluster'
@@ -20,7 +20,7 @@ haproxy_frontend_mode: 'http'
 #timeout settings
 retries: 3
 timeout_connect: 3s
-timeout_server: 5m
+timeout_server: 15s
 timeout_client: 5s
 timeout_queue: 5s
 maxconn: 2000

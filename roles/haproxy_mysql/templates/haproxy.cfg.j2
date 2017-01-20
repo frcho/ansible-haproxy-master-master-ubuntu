@@ -2,12 +2,10 @@ global
     log 127.0.0.1 local0 notice
     user {{haproxy_user}}
     group {{haproxy_group}}
-    maxconn {{maxconn}}
-
 
 defaults
     log global
-    retries {{retries}}
+    retries 2
     timeout connect {{timeout_connect}}
     timeout server {{timeout_server}}
     timeout client {{timeout_client}}
@@ -17,18 +15,8 @@ listen {{haproxy_backend_name}}
     mode {{ haproxy_backend_mode }}
     option mysql-check user {{haproxy_check_user}}
     balance {{ haproxy_backend_balance_method }}
-    server mysql-1 {{mysql_ip_master_node1}}:{{ haproxy_backend_port }} {{options}}
-    server mysql-2 {{mysql_ip_master_node2}}:{{ haproxy_backend_port }} {{options}}
-    timeout queue {{timeout_queue}}
-
-
-listen {{haproxy_frontend_name}}
-    bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
-    stats uri /
-    mode {{haproxy_frontend_mode}}
-    stats enable
-    stats auth {{haproxy_user}}:{{haproxy_web_pass}}
-
+    server mysql-1 {{mysql_ip_master_node1}}:{{ haproxy_backend_port }} check
+    server mysql-2 {{mysql_ip_master_node2}}:{{ haproxy_backend_port }} check
 
 
 
